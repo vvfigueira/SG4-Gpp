@@ -1,7 +1,7 @@
 # Macro file for exampleGarfield
 # 
 # Can only be run in batch, without graphic
-#
+
 
 # Initialize kernel
 /control/verbose 0
