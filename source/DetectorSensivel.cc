@@ -1,12 +1,17 @@
-#include "DetectorSensivel.hh"
-#include "DetectorMens.hh"
-#include "Detector.hh"
-//#include "Analise.hh"
+// Inlcudes do C++
 
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+
+// Includes da Simulação
+
+#include "DetectorSensivel.hh"
+#include "DetectorMens.hh"
+#include "Detector.hh"
+
+// Includes do Geant4
 
 #include "G4VProcess.hh"
 #include "G4SystemOfUnits.hh"

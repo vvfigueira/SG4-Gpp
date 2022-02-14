@@ -1,8 +1,12 @@
+// Includes da Simulação
+
 #include "RunAcao.hh"
 #include "GeradorPrimarias.hh"
 #include "Detector.hh"
 #include "Analise.hh"
 #include "Constantes.hh"
+
+// Includes do Geant4
 
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"

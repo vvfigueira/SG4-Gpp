@@ -1,6 +1,12 @@
-#include "GarfieldModelo.hh"
+// Includes do C++
 
 #include <iostream>
+
+// Includes da Simulação
+
+#include "GarfieldModelo.hh"
+
+// Includes do Geant4
 
 #include "G4Electron.hh"
 #include "G4GDMLParser.hh"

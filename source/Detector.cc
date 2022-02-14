@@ -44,7 +44,6 @@ using namespace CLHEP;
 
 Detector::Detector()
     : pressaogas(Dim::pressaogas),
-    //intcamp(12500*volt),
     temperaturagas(Dim::temperaturagas){
         detectormens = new DetectorMens(this);
 }

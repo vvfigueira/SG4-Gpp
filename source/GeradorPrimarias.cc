@@ -1,4 +1,8 @@
+// Includes da Simulação
+
 #include "GeradorPrimarias.hh"
+
+// Includes do Geant4
 
 #include "G4ParticleGun.hh"
 #include "G4SystemOfUnits.hh"

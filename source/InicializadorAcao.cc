@@ -1,3 +1,5 @@
+// Includes da Simulação
+
 #include "InicializadorAcao.hh"
 #include "GeradorPrimarias.hh"
 #include "EventoAcao.hh"

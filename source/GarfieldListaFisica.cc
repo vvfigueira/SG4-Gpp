@@ -1,5 +1,9 @@
+// Includes da Simulação
+
 #include "GarfieldListaFisica.hh"
 #include "GarfieldDetector.hh"
+
+// Includes do Geant4
 
 #include "G4EmConfigurator.hh"
 #include "G4FastSimulationManagerProcess.hh"

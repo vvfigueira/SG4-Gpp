@@ -1,10 +1,14 @@
+// Includes da Simulação
+
 #include "DetectorMens.hh"
 #include "Detector.hh"
+#include "GarfieldDetector.hh"
+
+// Includes do Geant4
 
 #include "G4UIdirectory.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4UnitsTable.hh"
-#include "GarfieldDetector.hh"
 
 DetectorMens::DetectorMens(Detector* HPGeDet) : detector(HPGeDet) {
 

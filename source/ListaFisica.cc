@@ -1,4 +1,8 @@
+// Includes da Simulação
+
 #include "ListaFisica.hh"
+
+// Includes do Geant4
 
 #include "G4EmStandardPhysics.hh"
 #include "G4EmLivermorePhysics.hh"

@@ -1,7 +1,11 @@
+// Includes da Simulação
+
 #include "EventoAcao.hh"
 #include "Analise.hh"
 #include "GarfieldDetector.hh"
 #include "Constantes.hh"
+
+// Includes do Geant4
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"

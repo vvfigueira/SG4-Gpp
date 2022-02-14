@@ -1,20 +1,29 @@
+// Includes do C++
+
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
 
-#include "colors.hh"
+// Includes do ROOT
 
 #include <TCanvas.h>
 #include <TROOT.h>
 #include "TApplication.h"
 
+// Includes da Simulação
+
 #include "GarfieldDetector.hh"
 #include "Analise.hh"
+#include "colors.hh"
 #include "Constantes.hh"
+
+// Includes do Geant4
 
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
+
+// Includes do Garfield++
 
 #include "Garfield/AvalancheMC.hh"
 #include "Garfield/AvalancheMicroscopic.hh"

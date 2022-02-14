@@ -10,8 +10,7 @@ using namespace CLHEP;
 
 // Definindo a Classe Campo como Campo Elétrico
 
-Campo::Campo(G4double intcamp)
-    /*: Intensidade1(223.184*volt), Intensidade2(465.38*volt), Intensidade3(243.976*volt)*/{
+Campo::Campo(G4double intcamp){
 
 }
 
