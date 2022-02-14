@@ -1,0 +1,20 @@
+/control/verbose 0
+/process/em/verbose 0
+/process/verbose 0
+/process/had/verbose 0
+/run/verbose 1
+/run/initialize
+
+/gun/particle gamma
+/gun/position 0 0.05 0 m
+/gun/direction 1 0 0
+/gun/energy 200 eV
+
+/Detector/DefGasPressao 133.322 Pa
+/Detector/DefCampoInt 12500 V
+
+/Detector/DefGasTemp 50 K
+/run/reinitializeGeometry
+/run/beamOn 1000000
+
+

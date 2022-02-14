@@ -1,0 +1,4 @@
+/Projeto/geometria/DefGasPressao 1 atm
+/run/reinitializeGeometry TRUE
+/run/reinitializeGeometry
+/control/execute vis.mac

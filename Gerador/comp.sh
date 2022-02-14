@@ -1,0 +1,1 @@
+g++ Gerador.cpp -o Gerador && ./Gerador

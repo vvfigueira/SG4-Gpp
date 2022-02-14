@@ -1,0 +1,28 @@
+/control/verbose 2
+/run/verbose 2
+
+/run/initialize
+
+/gun/particle gamma
+/gun/direction 1 0 0
+/gun/energy 200 eV
+
+/Detector/DefGasPressao 133.322 Pa
+/Detector/DefCampoInt 5 kV
+
+/run/reinitializeGeometry
+
+/run/beamOn 1000000
+
+/Detector/DefGasPressao 266.644 Pa
+
+/run/reinitializeGeometry
+
+/run/beamOn 1000000
+
+/Detector/DefGasPressao 399.966 Pa
+
+/run/reinitializeGeometry
+
+/run/beamOn 1000000
+
