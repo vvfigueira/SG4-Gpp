@@ -1,6 +1,8 @@
 #ifndef GeradorPrimarias_h
 #define GeradorPrimarias_h 1
 
+// Includes do Geant4
+
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "G4Event.hh"

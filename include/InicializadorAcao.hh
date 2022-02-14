@@ -1,9 +1,13 @@
 #ifndef InicializadorAcao_h
 #define InicializadorAcao_h 1
 
+// Includes da Simulação
+
 #include "Detector.hh"
 #include "EventoAcao.hh"
 #include "RunAcao.hh"
+
+// Includes do Geant4
 
 #include "G4VUserActionInitialization.hh"
 

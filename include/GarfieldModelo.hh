@@ -1,7 +1,11 @@
 #ifndef GarfieldModelo_h
 #define GarfieldModelo_h 1
 
+// Includes da Simulação
+
 #include "GarfieldDetector.hh"
+
+// Includes do Geant4
 
 #include "G4VFastSimulationModel.hh"
 

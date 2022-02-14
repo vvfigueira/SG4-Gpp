@@ -1,6 +1,8 @@
 #ifndef RunAcao_h
 #define RunAcao_h 1
 
+// Includes do Geant4
+
 #include "G4UserRunAction.hh"
 #include "G4Run.hh"
 

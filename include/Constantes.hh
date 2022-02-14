@@ -1,6 +1,8 @@
 #ifndef Constantes_h
 #define Constantes_h 1
 
+// Includes do Geant4
+
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 

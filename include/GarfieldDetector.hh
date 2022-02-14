@@ -1,9 +1,13 @@
 #ifndef GarfieldDetector_h
 #define GarfieldDetector_h 1
 
+// Includes do C++
+
 #include <iostream>
 #include <map>
 #include <vector>
+
+// Includes do Garfield++
 
 #include "Garfield/ComponentAnalyticField.hh"
 #include "Garfield/MediumMagboltz.hh"

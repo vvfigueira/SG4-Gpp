@@ -1,6 +1,8 @@
 #ifndef GarfieldListaFisica_h
 #define GarfieldListaFisica_h 1
 
+// Includes do Geant4
+
 #include "G4VModularPhysicsList.hh"
 #include "globals.hh"
 

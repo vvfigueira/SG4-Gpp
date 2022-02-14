@@ -1,7 +1,6 @@
 #ifndef _COLORS_
 #define _COLORS_
 
-/* FOREGROUND */
 #define RST  "\x1B[0m"
 #define KRED  "\x1B[31m"
 #define KGRN  "\x1B[32m"

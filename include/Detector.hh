@@ -1,7 +1,11 @@
 #ifndef Detector_h
 #define Detector_h 1
 
+// Includes da Simulação
+
 #include "DetectorMens.hh"
+
+// Includes do Geant4
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"

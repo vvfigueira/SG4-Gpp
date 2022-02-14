@@ -1,7 +1,11 @@
 #ifndef DetectorSensivel_h
 #define DetectorSensivel_h 1
 
+// Includes da Simulação
+
 #include "Detector.hh"
+
+// Includes do Geant4
 
 #include "G4VSensitiveDetector.hh"
 

@@ -1,7 +1,11 @@
 #ifndef TrackAcao_h
 #define TrackAcao_h 1
 
+// Includes da Simulação
+
 #include "EventoAcao.hh"
+
+// Includes do Geant4
 
 #include "G4UserTrackingAction.hh"
 #include "G4Track.hh"
