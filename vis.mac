@@ -1,28 +1,36 @@
+# Níveis de verbosidade
+
 /control/verbose 2
 /run/verbose 1
+/tracking/verbose 1
+
+# Inicialização
 
 /run/initialize
 
+# Utilização do OpenGL como motor gráfico
+
 /vis/open OGL
 
-/vis/viewer/set/autoRefresh false
-/vis/verbose errors
+# Visualização dos volumes físicos como WireFrame
 
 /vis/drawVolume
-
 /vis/viewer/set/style wireframe
+
+# Visualização das trajetórias por carga elétrica
 
 /vis/scene/add/trajectories smooth
 /vis/modeling/trajectories/create/drawByCharge
 /vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
 /vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 2 
 
+# Visualização de colisões e abilitação da acumulação de eventos na janela gráfica
+
 /vis/scene/add/hits
-
 /vis/scene/endOfEventAction accumulate
-
 /vis/viewer/set/autoRefresh true
-/vis/verbose warnings
 
-/vis/scene/endOfEventAction accumulate
-/tracking/verbose 1
+# Mostrar erros e avisos
+
+/vis/verbose warnings
+/vis/verbose errors
