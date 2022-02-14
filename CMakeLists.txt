@@ -1,18 +1,20 @@
 
 #----------------------------------------------------------------------------
-# Setup the project
+# Definição do projeto
+#
+
 cmake_minimum_required(VERSION 3.9   FATAL_ERROR)
-project(EXAMPLE)
+project(G4Gpp)
 if(NOT TARGET Garfield::Garfield)
   find_package(Garfield REQUIRED)
 endif()
 
 #----------------------------------------------------------------------------
-# Find Geant4 package, activating all available UI and Vis drivers by default
-# You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
-# to build a batch mode only executable
+# Encontra a instalação do Geant4 e ativa todos seus drives gráficos
+# Pode definir-se WITH_GEANT4_UIVIS como OFF para executar apenas em batch
 #
-option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+
+option(WITH_GEANT4_UIVIS "Constrói o projeto com Geant4 UI e drives de visualização" ON)
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 COMPONENTS ui_all vis_all)
 else()
@@ -20,52 +22,52 @@ else()
 endif()
 
 if(NOT Geant4_FOUND)
-  message("Geant4 is not found. Example cannot be built.")
+  message("Geant4 is not found. G4Gpp cannot be built.")
   return()
 endif()
 
 #----------------------------------------------------------------------------
-# Setup Geant4 include directories and compile definitions
-# Setup include directory for this project
-#
+# Carrega bibliotecas do Geant4 e seus compiladores
+# 
+
+
 include(${Geant4_USE_FILE})
-include_directories(${PROJECT_SOURCE_DIR}/include)
+
+#----------------------------------------------------------------------------
+# Inclusão das bibliotecas CLHEP, normalmente acompanham a instalação do G4
+#
+
 include_directories(${CLHEP_INCLUDE_DIR}/CLHEP/Units/)
 
 
 #----------------------------------------------------------------------------
-# Locate sources and headers for this project
-# NB: headers are included so they will show up in IDEs
-#
+# Bibliotecas e códigos fonte do projeto
+# 
+
 file(GLOB sources ${PROJECT_SOURCE_DIR}/source/*.cc )
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh )
 
 #----------------------------------------------------------------------------
-# Add the executable, and link it to the Geant4 libraries
+# Constrói o executável 'build'
 #
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -g")
 add_executable(build main.cc ${sources} ${headers})
 target_link_libraries(build ${Geant4_LIBRARIES} Garfield::Garfield)
 target_include_directories(build PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 #----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
-# build EXAMPLE. This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
-#
-set(EXAMPLEB1_SCRIPTS
-  teste.mac
+# Copia arquivos importantes para o diretório de utilização de '~$ cmake ..'
+# 
+
+set(G4Gpp_scripts
   vis.mac
-  gamma.mac
-  teste2.mac
-  Macro.mac
   ar_70_co2_30_1000mbar.gas
   run.mac
-  physics.mac
   mdt_elx_delta.txt
   )
 
-foreach(_script ${EXAMPLEB1_SCRIPTS})
+foreach(_script ${G4Gpp_scripts})
   configure_file(
     ${PROJECT_SOURCE_DIR}/${_script}
     ${PROJECT_BINARY_DIR}/${_script}
@@ -74,12 +76,13 @@ foreach(_script ${EXAMPLEB1_SCRIPTS})
 endforeach()
 
 #----------------------------------------------------------------------------
-# For internal Geant4 use - but has no effect if you build this
-# example standalone
-#
-add_custom_target(EXAMPLE DEPENDS build)
+# Para uso interno do Geant4
+# 
+
+add_custom_target(G4Gpp DEPENDS build)
 
 #----------------------------------------------------------------------------
-# Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
+# Instala o executável no 'bin' da definição de CMAKE_INSTALL_PREFIX
 #
+
 install(TARGETS build DESTINATION bin)
