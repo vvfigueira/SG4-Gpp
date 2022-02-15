@@ -7,16 +7,16 @@
 #include "globals.hh"
 
 class GarfieldListaFisica : public G4VModularPhysicsList {
- public:
-  GarfieldListaFisica();
-  virtual ~GarfieldListaFisica();
-  virtual void SetCuts();
-  virtual void ConstructParticle();
-  virtual void ConstructProcess();
+    public:
+        GarfieldListaFisica();
+        virtual ~GarfieldListaFisica();
+        virtual void SetCuts();
+        virtual void ConstructParticle();
+        virtual void ConstructProcess();
 
- protected:
-  // these methods Construct physics processes and register them
-  void AddParameterisation();
+    protected:
+        // these methods Construct physics processes and register them
+        void AddParameterisation();
 };
 
 #endif
