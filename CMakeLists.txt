@@ -22,14 +22,13 @@ else()
 endif()
 
 if(NOT Geant4_FOUND)
-  message("Geant4 is not found. G4Gpp cannot be built.")
+  message("Geant4 não encontrado. G4Gpp não pode ser compilado.")
   return()
 endif()
 
 #----------------------------------------------------------------------------
 # Carrega bibliotecas do Geant4 e seus compiladores
 # 
-
 
 include(${Geant4_USE_FILE})
 
