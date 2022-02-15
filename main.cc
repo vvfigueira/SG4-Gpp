@@ -20,30 +20,23 @@
 namespace prog {
     void PrintUsage() {
         G4cerr << " Modo de uso: " << G4endl;
-        G4cerr << " ./<nome_da_build> [-m macro ] [-u UIsession]" << G4endl;
+        G4cerr << " ./build [-m Macro]" << G4endl;
     }
 } 
 
 int main(int argc,char** argv)
 {
-
-    if (argc > 7) {
-        prog::PrintUsage();
-        return 1;
-    }
-
-    G4String macro;
-    G4String session;
-
-    for (G4int i = 1; i < argc; i = i + 2) {
-        if (G4String(argv[i]) == "-m")
-            macro = argv[i + 1];
-        else if (G4String(argv[i]) == "-u")
-            session = argv[i + 1];
-        else {
+    G4String macro = "";
+    
+    switch (argc){
+        case 3:
+            macro = argv[2];
+            break;
+        
+        default:
             prog::PrintUsage();
             return 1;
-        }
+            break;
     }
 
     G4UIExecutive* ui = 0;
@@ -51,30 +44,23 @@ int main(int argc,char** argv)
         ui = new G4UIExecutive(argc, argv);
     }
 
-    /*CLHEP::RanluxEngine defaultEngine( 1234567, 4 );
-    G4Random::setTheEngine( &defaultEngine );
-    G4int seed = time( NULL );
-    G4Random::setTheSeed( seed );*/
-
-    G4RunManager* runManager = new G4RunManager;
-
     auto detec = new Detector();
 
+    G4RunManager* runManager = new G4RunManager;
     runManager->SetUserInitialization(detec);
-    if(Dim::uGpp){runManager->SetUserInitialization(new GarfieldListaFisica());}else{
-        runManager->SetUserInitialization(new ListaFisica());
-    }
+    runManager->SetUserInitialization(new GarfieldListaFisica());
     runManager->SetUserInitialization(new InicializadorAcao(detec));
+
     G4VisManager* visManager = new G4VisExecutive;
     visManager->Initialize();
+
     G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
     if (macro.size()) {
-        // batch mode
-        G4String command = "/control/execute ";
-        UImanager->ApplyCommand(command + macro);
+        // Inicialização em modo batch
+        UImanager->ApplyCommand("/control/execute " + macro);
     } else {
-        // interactive mode : define UI session
+        // Inicialização em janela gráfica
         UImanager->ApplyCommand("/control/execute vis.mac");
         ui->SessionStart();
         delete ui;
@@ -82,5 +68,5 @@ int main(int argc,char** argv)
 
     delete visManager;
     delete runManager;
-    if(Dim::uGpp) GarfieldDetector::Dispose();
+    if(macro.size()) GarfieldDetector::Dispose();
 }
