@@ -63,7 +63,6 @@ set(G4Gpp_scripts
   vis.mac
   ar_70_co2_30_1000mbar.gas
   run.mac
-  mdt_elx_delta.txt
   )
 
 foreach(_script ${G4Gpp_scripts})
