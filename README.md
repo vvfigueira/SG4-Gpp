@@ -2,7 +2,7 @@
 ## Sobre
   Este projeto está sendo desenvolvido como tentativa de melhorar a qualidade das simulações iniciadas em [SG4](https://github.com/vvfigueira/SG4), agora além de utilizar as bibliotecas [Geant4](https://geant4.web.cern.ch/), também foram implementadas as bibliotecas [Garfield++](https://garfieldpp.web.cern.ch/garfieldpp/), as quais são especializadas para simulação de detectores gasosos.
 ## Requisitos
-  Uma instalação de Garfield++, Geant4 e todas suas dependências é suficiente para a compilação do projeto
+  Uma instalação de Garfield++, Geant4 e todas suas dependências é suficiente para a compilação do projeto.
 ## Compilação
   Caso possua uma instalação das bibliotecas CLHEP fora do diretório de instalação do Geant4, é necessário definir uma variável de ambiente `CLHEP_INCLUDE_DIR=[CLHEP_install_dir]/include/`, e também exportar as bibliotecas `export LD_LIBRARY_PATH=[CLHEP_install_dir]/lib/:${LD_LIBRARY_PATH}`.
   A compilação segue o método padrão do `cmake`, basta executar dentro da pasta desejada para a construção do projeto `cmake [path_to_CMakeLists.txt]` seguido de `make`, isto irá criar o arquivo binário `build` e copiar os arquivos de script `run.mac` e `vis.mac`.
