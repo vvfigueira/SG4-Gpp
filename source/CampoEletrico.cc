@@ -1,28 +1,34 @@
+// Includes do C++
+
 #include "math.h"
+
+// Includes da Simulação
 
 #include "CampoEletrico.hh"
 #include "Constantes.hh"
+
+// Includes do Geant4
 
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 
 using namespace CLHEP;
 
-// Definindo a Classe Campo como Campo Elétrico
+// Construtor
 
-Campo::Campo(G4double intcamp){
+Campo::Campo(){}
 
-}
+// Aniquilador
 
-Campo::~Campo(){
-    
-}
+Campo::~Campo(){}
+
+// Definido como 'true', campos elétricos
 
 G4bool Campo::DoesFieldChangeEnergy() const{
     return true;
 }
 
-// Definição da Classe Campo
+// Definição dos valores do campo
 
 void Campo::GetFieldValue(const G4double Point[4], G4double field[6]) const{
 

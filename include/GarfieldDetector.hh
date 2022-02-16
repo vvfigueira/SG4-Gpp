@@ -19,90 +19,108 @@ typedef std::pair<double, double> EnergyRange_MeV;
 typedef std::map<const std::string, EnergyRange_MeV> MapParticlesEnergy;
 
 class GarfieldParticle {
- public:
-  GarfieldParticle(std::string particleName, double ekin_eV, double time,
-                   double x_cm, double y_cm, double z_cm, double dx, double dy,
-                   double dz)
-      : fParticleName(particleName),
-        fEkin_MeV(ekin_eV / 1000000),
-        fTime(time),
-        fx_mm(10 * x_cm),
-        fy_mm(10 * y_cm),
-        fz_mm(10 * z_cm),
-        fdx(dx),
-        fdy(dy),
-        fdz(dz) {}
-  ~GarfieldParticle() {}
+    public:
 
-  std::string getParticleName() { return fParticleName; }
-  double getX_mm() { return fx_mm; }
-  double getY_mm() { return fy_mm; }
-  double getZ_mm() { return fz_mm; }
-  double getEkin_MeV() { return fEkin_MeV; }
-  double getTime() { return fTime; }
-  double getDX() { return fdx; }
-  double getDY() { return fdy; }
-  double getDZ() { return fdz; }
+        // Construtor e aniquilador da classe
 
- private:
-  std::string fParticleName;
-  double fEkin_MeV, fTime, fx_mm, fy_mm, fz_mm, fdx, fdy, fdz;
+        GarfieldParticle(std::string particleName, double ekin_eV, double time,
+            double x_cm, double y_cm, double z_cm, double dx, double dy,
+            double dz): 
+                fParticleName(particleName),
+                fEkin_MeV(ekin_eV / 1000000),
+                fTime(time),
+                fx_mm(10 * x_cm),
+                fy_mm(10 * y_cm),
+                fz_mm(10 * z_cm),
+                fdx(dx),
+                fdy(dy),
+                fdz(dz) {}
+        ~GarfieldParticle() {}
+
+        // Métodos internos do uso do Garfield++
+
+        std::string getParticleName() { return fParticleName; }
+        double getX_mm() { return fx_mm; }
+        double getY_mm() { return fy_mm; }
+        double getZ_mm() { return fz_mm; }
+        double getEkin_MeV() { return fEkin_MeV; }
+        double getTime() { return fTime; }
+        double getDX() { return fdx; }
+        double getDY() { return fdy; }
+        double getDZ() { return fdz; }
+
+    private:
+
+        // Variáveis internas
+
+        std::string fParticleName;
+        double fEkin_MeV, fTime, fx_mm, fy_mm, fz_mm, fdx, fdy, fdz;
 };
 
 class GarfieldDetector {
- public:
-  static GarfieldDetector* GetInstance();
-  static void Dispose();
+    public:
 
-  void InitializePhysics();
+        // Métodos internos do Garfield++
 
-  void DoIt(std::string particleName, double ekin_MeV, double time, double x_cm,double y_cm, double z_cm, double dx, double dy, double dz);
+        static GarfieldDetector* GetInstance();
+        static void Dispose();
 
-  void AddParticleName(const std::string particleName, double ekin_min_MeV,double ekin_max_MeV, std::string program);
-  bool FindParticleName(const std::string name,std::string program = "garfield");
-  bool FindParticleNameEnergy(std::string name, double ekin_MeV,std::string program = "garfield");
-  double GetMinEnergyMeVParticle(std::string name,std::string program = "garfield");
-  double GetMaxEnergyMeVParticle(std::string name,std::string program = "garfield");
-  void SetIonizationModel(std::string model, bool useDefaults = true);
-  std::string GetIonizationModel();
-  std::vector<GarfieldParticle*>* GetSecondaryParticles();
-  void DeleteSecondaryParticles();
-  
-  inline void EnableCreateSecondariesInGeant4(bool flag) {createSecondariesInGeant4 = flag;}
-  inline bool GetCreateSecondariesInGeant4() {return createSecondariesInGeant4;}
-  inline double GetEnergyDeposit_MeV() { return fEnergyDeposit / 1000000; }
-  inline double GetAvalancheSize() { return fAvalancheSize; }
-  inline double GetGain() { return fGain; }
-  
-  inline void Clear() {
-    fEnergyDeposit = 0;
-    fAvalancheSize = 0;
-    fGain = 0;
-    nsum = 0;
-  }
+        void InitializePhysics();
 
- private:
-  GarfieldDetector();
-  ~GarfieldDetector();
+        void DoIt(std::string particleName, double ekin_MeV, double time, double x_cm,double y_cm, double z_cm, double dx, double dy, double dz);
 
-  std::string fIonizationModel;
+        void AddParticleName(const std::string particleName, double ekin_min_MeV,double ekin_max_MeV, std::string program);
+        bool FindParticleName(const std::string name,std::string program = "garfield");
+        bool FindParticleNameEnergy(std::string name, double ekin_MeV,std::string program = "garfield");
+        double GetMinEnergyMeVParticle(std::string name,std::string program = "garfield");
+        double GetMaxEnergyMeVParticle(std::string name,std::string program = "garfield");
+        void SetIonizationModel(std::string model, bool useDefaults = true);
+        std::string GetIonizationModel();
+        std::vector<GarfieldParticle*>* GetSecondaryParticles();
+        void DeleteSecondaryParticles();
+        
+        inline void EnableCreateSecondariesInGeant4(bool flag) {createSecondariesInGeant4 = flag;}
+        inline bool GetCreateSecondariesInGeant4() {return createSecondariesInGeant4;}
+        inline double GetEnergyDeposit_MeV() { return fEnergyDeposit / 1000000; }
+        inline double GetAvalancheSize() { return fAvalancheSize; }
+        inline double GetGain() { return fGain; }
+        
+        inline void Clear() {
+            fEnergyDeposit = 0;
+            fAvalancheSize = 0;
+            fGain = 0;
+            nsum = 0;
+        }
 
-  static GarfieldDetector* fGarfieldDetector;
-  MapParticlesEnergy fMapParticlesEnergyGeant4;
-  MapParticlesEnergy fMapParticlesEnergyGarfield;
-  Garfield::MediumMagboltz* fMediumMagboltz;
-  Garfield::Sensor* fSensor;
-  Garfield::TrackHeed* fTrackHeed;
-  Garfield::ComponentAnalyticField* fComponentAnalyticField;
+    private:
 
-  std::vector<GarfieldParticle*>* fSecondaryParticles;
+        // Constutor e aniquilador da classe
 
-  bool createSecondariesInGeant4;
-  bool dado;
-  double fEnergyDeposit;
-  double fAvalancheSize;
-  double fGain;
-  int nsum;
-  Garfield::ViewSignal signalView;
+        GarfieldDetector();
+        ~GarfieldDetector();
+
+        // Modelo de ionização utilizado
+
+        std::string fIonizationModel;
+
+        // Variáveis internas do Garfield++
+
+        static GarfieldDetector* fGarfieldDetector;
+        MapParticlesEnergy fMapParticlesEnergyGeant4;
+        MapParticlesEnergy fMapParticlesEnergyGarfield;
+        Garfield::MediumMagboltz* fMediumMagboltz;
+        Garfield::Sensor* fSensor;
+        Garfield::TrackHeed* fTrackHeed;
+        Garfield::ComponentAnalyticField* fComponentAnalyticField;
+
+        std::vector<GarfieldParticle*>* fSecondaryParticles;
+
+        bool createSecondariesInGeant4;
+        bool dado;
+        double fEnergyDeposit;
+        double fAvalancheSize;
+        double fGain;
+        int nsum;
+        Garfield::ViewSignal signalView;
 };
 #endif
