@@ -18,6 +18,8 @@
 typedef std::pair<double, double> EnergyRange_MeV;
 typedef std::map<const std::string, EnergyRange_MeV> MapParticlesEnergy;
 
+// Construção da classe responsável pelas partículas no Garfield++
+
 class GarfieldParticle {
     public:
 
@@ -56,6 +58,8 @@ class GarfieldParticle {
         std::string fParticleName;
         double fEkin_MeV, fTime, fx_mm, fy_mm, fz_mm, fdx, fdy, fdz;
 };
+
+// Construção da classe responsável pelo detector do Garfield++
 
 class GarfieldDetector {
     public:

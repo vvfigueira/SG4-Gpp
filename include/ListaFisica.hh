@@ -5,10 +5,16 @@
 
 #include "G4VModularPhysicsList.hh"
 
+// Criação da classe 'ListaFísica' derivada da classe 
+// 'G4VModularPhysicsList' do Geant4
+
 class ListaFisica : public G4VModularPhysicsList{
-public:
-    ListaFisica();
-    ~ListaFisica();
+    public:
+
+        // Construtor e aniquilador da classe
+
+        ListaFisica();
+        ~ListaFisica();
 };
 
 #endif
