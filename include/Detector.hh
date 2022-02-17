@@ -9,6 +9,9 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
+#include "G4SystemOfUnits.hh"
+
+static constexpr double torr = atmosphere/760.;
 
 class DetectorMens;
 

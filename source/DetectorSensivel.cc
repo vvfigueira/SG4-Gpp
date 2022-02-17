@@ -50,7 +50,7 @@ G4bool DetectorSensivel::ProcessHits(G4Step*aStep, G4TouchableHistory*ROhist){
     // Truque para converter double para char*
     
     std::stringstream valorpress;
-    valorpress << std::roundf(pressao/CLHEP::torr *100)/100;
+    valorpress << std::roundf(pressao/torr *100)/100;
     std::string presscorrig;
     valorpress >> presscorrig;
 
@@ -76,7 +76,7 @@ G4bool DetectorSensivel::ProcessHits(G4Step*aStep, G4TouchableHistory*ROhist){
         aFile << energia/CLHEP::eV << "\n";
         bFile << energia/CLHEP::eV << "\n";
         cFile << energia/CLHEP::eV << "\t"
-        << temperatura/CLHEP::torr << "\n";
+        << temperatura/torr << "\n";
         aStep->GetPreStepPoint()->SetKineticEnergy(0*CLHEP::eV);
     };
 

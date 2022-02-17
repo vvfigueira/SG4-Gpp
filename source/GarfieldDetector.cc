@@ -17,6 +17,7 @@
 #include "Analise.hh"
 #include "colors.hh"
 #include "Constantes.hh"
+#include "Detector.hh"
 
 // Includes do Geant4
 

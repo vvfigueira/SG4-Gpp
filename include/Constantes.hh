@@ -16,7 +16,7 @@ namespace Dim{
     static constexpr double Intensidade2 = 465.38*volt; // Intensidade entre o Cátodo de Nicrômo Externo e Interno
     static constexpr double Intensidade3 = 243.976*volt; // Intensidade entre o Cátodo Interno e o Ânodo de Ouro
     
-    static constexpr double R = 62.3636*L*torr/(kelvin*mole); // Constante universal dos Gases Ideais
+    static constexpr double R = 62.3636*L*(atmosphere/760.)/(kelvin*mole); // Constante universal dos Gases Ideais
     static constexpr G4int variaveis = 8; // Número de variáveis para o Integrador de Caminho
     static constexpr G4double passoMin = 0.010*mm; // Passo mínimo utilizado pelo ChordFinder
     static constexpr G4int n = 60; // Número de fios nos Cátodos
@@ -31,7 +31,7 @@ namespace Dim{
     static constexpr double raiofioouro = raio/2; // Raio do Fio de Ouro
     static constexpr double raiointal = 10.5*cm; // Raio Interno Alumínio
     static constexpr double raioextal = 10.66*cm; // Raio Externo Alumínio
-    static constexpr double pressaogas = 760.*torr; // Pressão do Gás
+    static constexpr double pressaogas = atmosphere; // Pressão do Gás
     static constexpr double potencialanodo = 2500*volt; // Potencial do Ânodo
     static constexpr double potencialcatint = 750*volt; // Potencial do Cátodo Interno
     static constexpr double potencialcatext = 20*volt; // Potencial do Cátodo Externo
