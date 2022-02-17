@@ -33,13 +33,6 @@ endif()
 include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
-# Inclusão das bibliotecas CLHEP, normalmente acompanham a instalação do G4
-#
-
-include_directories(${CLHEP_INCLUDE_DIR}/CLHEP/Units/)
-
-
-#----------------------------------------------------------------------------
 # Bibliotecas e códigos fonte do projeto
 # 
 

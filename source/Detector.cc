@@ -26,7 +26,7 @@
 // Include de Unidades
 
 #include "G4SystemOfUnits.hh"
-#include "PhysicalConstants.h"
+#include "CLHEP/Units/PhysicalConstants.h"
 
 // Includes do Campo
 

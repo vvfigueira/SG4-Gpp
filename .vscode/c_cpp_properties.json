@@ -5,7 +5,6 @@
             "includePath": [
                 "${HOME}/root/**",
                 "${default}",
-                "${CLHEP_INCLUDE_DIR}/**",
                 "/home/irizu/Documentos/SG4-Gpp/include/**",
                 "${G4INSTALL}/**",
                 "${G4INCLUDE}/**",
