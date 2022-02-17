@@ -5,11 +5,17 @@
 #include "colors.hh"
 #include "Constantes.hh"
 
+// Construtor inicializando variáveis
+
 StepAcao::StepAcao(const Detector* detec1, EventoAcao* event1)
     :G4UserSteppingAction(), detec12(detec1), event12(event1){
 }
 
+// Aniquilador
+
 StepAcao::~StepAcao(){}
+
+// Método executado em cada step
 
 void StepAcao::UserSteppingAction(const G4Step* step){
     

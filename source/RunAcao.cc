@@ -12,6 +12,8 @@
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
 
+// Construtor inicializando histogramas
+
 RunAcao::RunAcao()
     : G4UserRunAction(){
         
@@ -44,13 +46,19 @@ RunAcao::RunAcao()
         
 }
 
+// Aniquilador deletando usos de memória
+
 RunAcao::~RunAcao(){delete G4AnalysisManager::Instance();}
+
+// Método executado no início de cada run
 
 void RunAcao::BeginOfRunAction(const G4Run* run){
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
     analysisManager->OpenFile("Garfield");
 }
+
+// Método executado no final de cada run
 
 void RunAcao::EndOfRunAction(const G4Run* run){
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();

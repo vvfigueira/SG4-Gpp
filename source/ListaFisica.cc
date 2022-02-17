@@ -11,6 +11,8 @@
 #include "G4EmStandardPhysics_option3.hh"
 #include "G4OpticalPhysics.hh"
 
+// Construtor inicializando listas de física
+
 ListaFisica::ListaFisica(){
     //RegisterPhysics(new G4EmStandardPhysics());
     //RegisterPhysics(new G4EmLivermorePhysics());
@@ -19,5 +21,7 @@ ListaFisica::ListaFisica(){
     //RegisterPhysics(new G4OpticalPhysics());
 
 }
+
+// Aniquilador
 
 ListaFisica::~ListaFisica(){}
