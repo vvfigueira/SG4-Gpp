@@ -78,6 +78,7 @@ void Detector::DefineMaterials() {
     auto Cr = NistManager->FindOrBuildMaterial("G4_Cr");
 
     G4Element* C = NistManager->FindOrBuildElement("C", false);
+    G4Element* H = NistManager->FindOrBuildElement("H", false);
     G4Element* O = NistManager->FindOrBuildElement("O", false);
     G4Element* Ne = NistManager->FindOrBuildElement("Ne", false);
     G4Element* Ar = NistManager->FindOrBuildElement("Ar", false);
@@ -86,9 +87,19 @@ void Detector::DefineMaterials() {
 
     DensidadeCO2 = 0.610*mg/cm3;
 
-    G4Material* CO2 = new G4Material("CO2", DensidadeCO2, 2, kStateGas, Dim::temperaturagas, Dim::pressaogas);
+    G4Material* CO2 = new G4Material("CO2", DensidadeCO2, 2, kStateGas, 
+        Dim::temperaturagas, Dim::pressaogas);
     CO2->AddElement(C, 1);
     CO2->AddElement(O, 2);
+
+    // Definição do gás 'CH4'
+
+    DensidadeCH4 = 0.657*mg/cm3;
+
+    G4Material* CH4 = new G4Material("CH4", DensidadeCH4,2,kStateGas, 
+        Dim::temperaturagas, Dim::pressaogas);
+    CH4->AddElement(C, 1);
+    CH4->AddElement(H, 4);
 
     // Definição do nicromo
 
@@ -100,7 +111,8 @@ void Detector::DefineMaterials() {
 
     DensidadeGas = 0.816*mg/cm3;
 
-    G4Material* NeCO2_90_10 = new G4Material("NeCO2_90_10", DensidadeGas, 2, kStateGas, Dim::temperaturagas, Dim::pressaogas);
+    G4Material* NeCO2_90_10 = new G4Material("NeCO2_90_10", DensidadeGas, 2, 
+        kStateGas, Dim::temperaturagas, Dim::pressaogas);
     NeCO2_90_10->AddElement(Ne, 0.9);
     NeCO2_90_10->AddMaterial(CO2, 0.1);
 
@@ -108,9 +120,19 @@ void Detector::DefineMaterials() {
 
     DensidadeGas2 = 1.345*mg/cm3;
 
-    G4Material* ArCO2_70_30 = new G4Material("ArCO2_70_30", DensidadeGas2,2, kStateGas, Dim::temperaturagas, Dim::pressaogas);
+    G4Material* ArCO2_70_30 = new G4Material("ArCO2_70_30", DensidadeGas2, 2, 
+        kStateGas, Dim::temperaturagas, Dim::pressaogas);
     ArCO2_70_30->AddElement(Ar, 0.7);
     ArCO2_70_30->AddMaterial(CO2,0.3);
+
+    // Definição da mistura 'Ar+CH4'
+
+    DensidadeGas3 = 1.560*mg/cm3;
+
+    G4Material* ArCH4_90_10 = new G4Material("ArCH4_90_10", DensidadeGas3, 2, 
+        kStateGas, Dim::temperaturagas, Dim::pressaogas);
+    ArCH4_90_10->AddElement(Ar, 0.9);
+    ArCH4_90_10->AddMaterial(CH4, 0.1);
 
     G4cout << *(G4Material::GetMaterialTable()) << G4endl;
 }

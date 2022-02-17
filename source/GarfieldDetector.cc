@@ -259,20 +259,20 @@ void GarfieldDetector::InitializePhysics() {
     // Definição da mistura gasosa
 
     fMediumMagboltz = new Garfield::MediumMagboltz();
-    fMediumMagboltz->SetComposition("ar", 70., "co2", 30.);
+    fMediumMagboltz->SetComposition("ar", 90., "ch4", 10.);
     fMediumMagboltz->SetTemperature(Dim::temperaturagas/kelvin);
     fMediumMagboltz->SetPressure(Dim::pressaogas/torr);
     fMediumMagboltz->Initialise(true);
 
     // Definição do coeficiente de Penning
 
-    const double rPenning = 0.57;
+    const double rPenning = 0.21;
     const double lambdaPenning = 0.;
     fMediumMagboltz->EnablePenningTransfer(rPenning, lambdaPenning, "ar");
 
     // Indicando o arquivo .gas
 
-    fMediumMagboltz->LoadGasFile("ar_70_co2_30_1000mbar.gas");
+    fMediumMagboltz->LoadGasFile("ar_90_ch4_10_1atm.gas");
 
     // Inicialização dos componentes com potencial
 
