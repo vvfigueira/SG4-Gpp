@@ -1,35 +1,48 @@
+// Includes do C++
+
 #include "math.h"
+
+// Includes da Simulação
 
 #include "CampoEletrico.hh"
 #include "Constantes.hh"
+
+// Includes do Geant4
 
 #include "G4SystemOfUnits.hh"
 #include "globals.hh"
 
 using namespace CLHEP;
 
-// Definindo a Classe Campo como Campo Elétrico
+// Construtor
 
-Campo::Campo(G4double intcamp){
+Campo::Campo(){}
 
-}
+// Aniquilador
 
-Campo::~Campo(){
-    
-}
+Campo::~Campo(){}
+
+// Definido como 'true', campos elétricos
 
 G4bool Campo::DoesFieldChangeEnergy() const{
     return true;
 }
 
-// Definição da Classe Campo
+// Definição dos valores do campo
 
 void Campo::GetFieldValue(const G4double Point[4], G4double field[6]) const{
+
+    // Campos magnéticos nulos
 
     field[0]=0.*tesla;
     field[1]=0.*tesla;
     field[2]=0.*tesla;
+
+    // Componente 'z' do campo nula
+
     field[5]=0.*volt/mm;
+
+    // Componentes 'x'(field[3]) e 'y'(field[4]) do campo definidas com base nos potenciais
 
     if(sqrt( Point[0]*Point[0] + Point[1]*Point[1]) <= (Dim::raioextal + 1*mm) && sqrt( Point[0]*Point[0] + Point[1]*Point[1]  ) > Dim::distcatext ){  
         field[3]=Dim::Intensidade1*(Point[0]/(Point[0]*Point[0]+Point[1]*Point[1]));

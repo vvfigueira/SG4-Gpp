@@ -11,24 +11,32 @@
 
 class G4VPhysicalVolume;
 
+// Criação da classe 'GarfieldModelo' derivada da classe 
+// 'G4VFastSimulationModel' do Geant4
+
 class GarfieldModelo : public G4VFastSimulationModel {
- public:
-  //-------------------------
-  // Constructor, destructor
-  //-------------------------
-  GarfieldModelo(G4String, G4Region*);
-  GarfieldModelo(G4String);
-  ~GarfieldModelo();
+    public:
+        
+        // Construtor e aniquilador da classe
 
-  void SetPhysics(GarfieldDetector* fGarfieldDetector);
-  void WriteGeometryToGDML(G4VPhysicalVolume* physicalVolume);
+        GarfieldModelo(G4String, G4Region*);
+        GarfieldModelo(G4String);
+        ~GarfieldModelo();
 
-  virtual G4bool IsApplicable(const G4ParticleDefinition&);
-  virtual G4bool ModelTrigger(const G4FastTrack&);
-  virtual void DoIt(const G4FastTrack&, G4FastStep&);
+        // Métodos internos
 
- private:
-  GarfieldDetector* fGarfieldDetector;
+        void SetPhysics(GarfieldDetector* fGarfieldDetector);
+        void WriteGeometryToGDML(G4VPhysicalVolume* physicalVolume);
+
+        virtual G4bool IsApplicable(const G4ParticleDefinition&);
+        virtual G4bool ModelTrigger(const G4FastTrack&);
+        virtual void DoIt(const G4FastTrack&, G4FastStep&);
+
+    private:
+
+        // Declaração da variável do detector do Garfield++
+
+        GarfieldDetector* fGarfieldDetector;
 };
 
 #endif

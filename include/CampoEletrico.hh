@@ -5,18 +5,24 @@
 
 #include "G4ElectroMagneticField.hh"
 
+// Criação da classe 'Campo' derivada da classe G4ElectroMagneticField do Geant4
+
 class Campo : public G4ElectroMagneticField {
 
     public:
-        Campo(G4double intcamp);
+        
+        // Construtor e aniquilador da classe
+        
+        Campo();
         ~Campo();
 
+        // Método que obtém os valores do campo
+
         virtual void  GetFieldValue(const G4double Point[4], G4double *Bfield ) const override;
+
+        // Deve ser 'true' para campos elétricos e 'false' para campos magnéticos
+
         virtual G4bool DoesFieldChangeEnergy() const override;
 
-    private:
-        G4double Intensidade3;
-        G4double Intensidade2;
-        G4double Intensidade1;
 };
 #endif
