@@ -8,7 +8,7 @@
 #include "StepAcao.hh"
 
 InicializadorAcao::InicializadorAcao(Detector* detector)
- : G4VUserActionInitialization(), detec(detector){}
+    : G4VUserActionInitialization(), detec(detector){}
 
 InicializadorAcao::~InicializadorAcao(){}
 

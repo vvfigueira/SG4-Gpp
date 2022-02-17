@@ -42,11 +42,15 @@
 
 using namespace CLHEP;
 
+// Construtor inicializando variáveis
+
 Detector::Detector()
     : pressaogas(Dim::pressaogas),
     temperaturagas(Dim::temperaturagas){
         detectormens = new DetectorMens(this);
 }
+
+// Aniquilador deletando variáveis criadas pelo construtor
 
 Detector::~Detector(){delete detectormens;}
 
@@ -65,6 +69,8 @@ void Detector::DefineMaterials() {
     
     auto NistManager = G4NistManager::Instance();
 
+    // Adição de materiais prontos
+
     NistManager->FindOrBuildMaterial("G4_Al");
     NistManager->FindOrBuildMaterial("G4_Au");
     NistManager->FindOrBuildMaterial("G4_Galactic");
@@ -77,25 +83,30 @@ void Detector::DefineMaterials() {
     G4Element* Ne = NistManager->FindOrBuildElement("Ne", false);
     G4Element* Ar = NistManager->FindOrBuildElement("Ar", false);
 
-    //DensidadeCO2 = (((12.011+15.999*2)/3.) *Dim::pressaogas)/(Dim::R *Dim::temperaturagas);
+    // Definição do gás 'CO2'
+
     DensidadeCO2 = 0.610*mg/cm3;
 
     G4Material* CO2 = new G4Material("CO2", DensidadeCO2, 2, kStateGas, Dim::temperaturagas, Dim::pressaogas);
     CO2->AddElement(C, 1);
     CO2->AddElement(O, 2);
 
+    // Definição do nicromo
+
     auto Nicromo = new G4Material("Nicromo", Dim::densidadenicr, 2, kStateSolid, Dim::temperaturagas, Dim::pressaogas); 
     Nicromo->AddMaterial(Ni, 77.0*perCent);
     Nicromo->AddMaterial(Cr, 23.0*perCent);
 
-    //DensidadeGas = (((20.18*0.9+0.1*((12.011+ 15.999*2)/3.))) *Dim::pressaogas)/(Dim::R*Dim::temperaturagas);
+    // Definição da mistura 'Ne+CO2'
+
     DensidadeGas = 0.816*mg/cm3;
 
     G4Material* NeCO2_90_10 = new G4Material("NeCO2_90_10", DensidadeGas, 2, kStateGas, Dim::temperaturagas, Dim::pressaogas);
     NeCO2_90_10->AddElement(Ne, 0.9);
     NeCO2_90_10->AddMaterial(CO2, 0.1);
 
-    //DensidadeGas2 = (((39.948*0.7+0.3*((12.011+15.999*2)/3.))) *Dim::pressaogas)/(Dim::R*Dim::temperaturagas);
+    // Definição da mistura 'Ar+CO2'
+
     DensidadeGas2 = 1.345*mg/cm3;
 
     G4Material* ArCO2_70_30 = new G4Material("ArCO2_70_30", DensidadeGas2,2, kStateGas, Dim::temperaturagas, Dim::pressaogas);
@@ -208,7 +219,7 @@ G4VPhysicalVolume* Detector::DefineVolumes(){
 
 void Detector::ConstructSDandField(){
 
-    auto campoEletrico = new Campo(intcamp);
+    auto campoEletrico = new Campo();
     auto campoManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
     auto campoEq = new G4EqMagElectricField(campoEletrico);
     auto passo = new G4DormandPrince745(campoEq, Dim::variaveis);

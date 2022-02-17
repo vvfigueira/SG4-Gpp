@@ -32,10 +32,17 @@ G4bool Campo::DoesFieldChangeEnergy() const{
 
 void Campo::GetFieldValue(const G4double Point[4], G4double field[6]) const{
 
+    // Campos magnéticos nulos
+
     field[0]=0.*tesla;
     field[1]=0.*tesla;
     field[2]=0.*tesla;
+
+    // Componente 'z' do campo nula
+
     field[5]=0.*volt/mm;
+
+    // Componentes 'x'(field[3]) e 'y'(field[4]) do campo definidas com base nos potenciais
 
     if(sqrt( Point[0]*Point[0] + Point[1]*Point[1]) <= (Dim::raioextal + 1*mm) && sqrt( Point[0]*Point[0] + Point[1]*Point[1]  ) > Dim::distcatext ){  
         field[3]=Dim::Intensidade1*(Point[0]/(Point[0]*Point[0]+Point[1]*Point[1]));
