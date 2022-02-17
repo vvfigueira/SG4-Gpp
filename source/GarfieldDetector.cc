@@ -23,14 +23,6 @@
 #include "globals.hh"
 #include "G4SystemOfUnits.hh"
 
-// Includes do Garfield++
-
-#include "Garfield/AvalancheMC.hh"
-#include "Garfield/AvalancheMicroscopic.hh"
-#include "Garfield/ViewSignal.hh"
-#include "Garfield/DriftLineRKF.hh"
-#include "Garfield/ViewField.hh"
-
 // Inicialização de variável
 
 GarfieldDetector* GarfieldDetector::fGarfieldDetector = 0;
@@ -59,8 +51,17 @@ GarfieldDetector::GarfieldDetector() {
     fSensor = 0;
     fComponentAnalyticField = 0;
     fTrackHeed = 0;
+    fAvalMC = 0;
+    fAvalmc = 0;
+    fDrift = 0;
     createSecondariesInGeant4 = true;
     fIonizationModel = "PAIPhot";
+    xFile.open("AvaPEle.txt", std::ofstream::app);
+    yFile.open("AvaPTemp.txt", std::ofstream::app);
+    zFile.open("AvaTot.txt", std::ofstream::app);
+    aFile.open("EleEner.txt", std::ofstream::app);
+    bFile.open("ElePos.txt", std::ofstream::app);
+    cFile.open("EEnerPos.txt", std::ofstream::app);
 }
 
 // Aniquilador
@@ -72,6 +73,15 @@ GarfieldDetector::~GarfieldDetector() {
     delete fSensor;
     delete fComponentAnalyticField;
     delete fTrackHeed;
+    delete fAvalMC;
+    delete fAvalmc;
+    delete fDrift;
+    xFile.close();
+    yFile.close();
+    zFile.close();
+    aFile.close();
+    bFile.close();
+    cFile.close();
 
     std::cout << "Aniquilando GarfieldDetector" << std::endl;
 }
@@ -97,8 +107,7 @@ void GarfieldDetector::SetIonizationModel(std::string model, bool useDefaults) {
             // Garfield++ é válido
 
             this->AddParticleName("e-", 1e-6, 1e-3, "garfield");
-            this->AddParticleName("gamma", 1e-6, 1e+8, "garfield");//--> Padrao
-            //this->AddParticleName("gamma",1e+8,1e+10, "garfield");//-->Truque
+            this->AddParticleName("gamma", 1e-6, 1e+8, "garfield");            
 
             // Partículas e energias para as quais os modelos PAI ou PAIPhot 
             // são válidos
@@ -121,8 +130,7 @@ void GarfieldDetector::SetIonizationModel(std::string model, bool useDefaults) {
             // Partículas e energias para as quais G4FastSimulationModel com
             // Garfield++ é válido
 
-            this->AddParticleName("gamma", 1e-6, 1e+8, "garfield");//-->Padrao
-            //this->AddParticleName("gamma",1e+8,1e+10,"garfield");//-->Truque
+            this->AddParticleName("gamma", 1e-6, 1e+8, "garfield");
             this->AddParticleName("e-", 6e-2, 1e+7, "garfield");
             this->AddParticleName("e+", 6e-2, 1e+7, "garfield");
             this->AddParticleName("mu-", 1e+1, 1e+8, "garfield");
@@ -139,30 +147,34 @@ void GarfieldDetector::SetIonizationModel(std::string model, bool useDefaults) {
     }
 }
 
+// Adição de partículas
+
 void GarfieldDetector::AddParticleName(const std::string particleName,
     double ekin_min_MeV, double ekin_max_MeV, std::string program) {
     if (ekin_min_MeV >= ekin_max_MeV) {
         std::cout << "Ekin_min=" << ekin_min_MeV
-            << " keV is larger than Ekin_max=" << ekin_max_MeV << " keV"
+            << " keV é maior que Ekin_max=" << ekin_max_MeV << " keV"
             << std::endl;
         return;
     }
 
     if (program == "garfield") {
-        std::cout << "Garfield model (Heed) is applicable for G4Particle "
-            << particleName << " between " << ekin_min_MeV << " MeV and "
+        std::cout << "Modelo do Garfield (Heed) é aplicável para G4Particle "
+            << particleName << " entre " << ekin_min_MeV << " MeV e "
             << ekin_max_MeV << " MeV" << std::endl;
 
         fMapParticlesEnergyGarfield.insert(std::make_pair(
             particleName, std::make_pair(ekin_min_MeV, ekin_max_MeV)));
     } else {
-        std::cout << fIonizationModel << " is applicable for G4Particle "
-            << particleName << " between " << ekin_min_MeV << " MeV and "
+        std::cout << fIonizationModel << " é aplicável para G4Particle "
+            << particleName << " entre " << ekin_min_MeV << " MeV e "
             << ekin_max_MeV << " MeV" << std::endl;
         fMapParticlesEnergyGeant4.insert(std::make_pair(
             particleName, std::make_pair(ekin_min_MeV, ekin_max_MeV)));
     }
 }
+
+// Procura se a partícula está definida no Garfield++ ou no Geant4
 
 bool GarfieldDetector::FindParticleName(std::string name, std::string program) {
     if (program == "garfield") {
@@ -174,6 +186,8 @@ bool GarfieldDetector::FindParticleName(std::string name, std::string program) {
     }
     return false;
 }
+
+// Verifica se a energia informada está dentro dos limites estabelecidos para a partícula
 
 bool GarfieldDetector::FindParticleNameEnergy(std::string name, double ekin_MeV,
     std::string program) {
@@ -197,6 +211,8 @@ bool GarfieldDetector::FindParticleNameEnergy(std::string name, double ekin_MeV,
     return false;
 }
 
+// Retorna a energia mínima definida para a partícula
+
 double GarfieldDetector::GetMinEnergyMeVParticle(std::string name,
     std::string program) {
     if (program == "garfield") {
@@ -214,6 +230,8 @@ double GarfieldDetector::GetMinEnergyMeVParticle(std::string name,
     }
     return -1;
 }
+
+// Retorna a energia máxima definida para a partícula
 
 double GarfieldDetector::GetMaxEnergyMeVParticle(std::string name,
     std::string program) {
@@ -233,25 +251,39 @@ double GarfieldDetector::GetMaxEnergyMeVParticle(std::string name,
     return -1;
 }
 
+// Construção dos elementos do Detector do Garfield++
+
 void GarfieldDetector::InitializePhysics() {
-    // Define the gas mixture.
-    //auto cfield = new TCanvas("field","",600., 600.);
-    //auto field = new Garfield::ViewField();
+    
+    // Definição da mistura gasosa
+
     fMediumMagboltz = new Garfield::MediumMagboltz();
     fMediumMagboltz->SetComposition("ar", 70., "co2", 30.);
     fMediumMagboltz->SetTemperature(Dim::temperaturagas/kelvin);
     fMediumMagboltz->SetPressure(Dim::pressaogas/torr);
     fMediumMagboltz->Initialise(true);
-    // Set the Penning transfer efficiency.
+
+    // Definição do coeficiente de Penning
+
     const double rPenning = 0.57;
     const double lambdaPenning = 0.;
     fMediumMagboltz->EnablePenningTransfer(rPenning, lambdaPenning, "ar");
+
+    // Indicando o arquivo .gas
+
     fMediumMagboltz->LoadGasFile("ar_70_co2_30_1000mbar.gas");
+
+    // Inicialização dos componentes com potencial
 
     fComponentAnalyticField = new Garfield::ComponentAnalyticField();
     fComponentAnalyticField->SetMedium(fMediumMagboltz);
 
-    fComponentAnalyticField->AddWire(0., 0., 2 * Dim::raiofioouro/cm, Dim::potencialanodo/volt, "Anodo");
+    // Definição do Ânodo de Ouro
+
+    fComponentAnalyticField->AddWire(0., 0., 2 * Dim::raiofioouro/cm, 
+        Dim::potencialanodo/volt, "Anodo");
+
+    // Definição do Cátodo Interno
 
     for (int i = 0; i < Dim::n; i++) {
         std::stringstream valori;
@@ -265,6 +297,8 @@ void GarfieldDetector::InitializePhysics() {
             "CatInt"+icorrig);
     }
 
+    // Definição do Cátodo Externo
+
     for (int i = 0; i < Dim::n; i++) {
         std::stringstream valori;
         valori << i;
@@ -277,24 +311,22 @@ void GarfieldDetector::InitializePhysics() {
             "CatExt"+icorrig);
     }
 
-    // Add the tube.
+    // Definição do Cátodo de Alumínio
+
     fComponentAnalyticField->AddTube((Dim::raioextal+Dim::raiointal)/(2*cm), 
         Dim::potencialal, 0, "Aluminio");
 
+    // Cálculo do campo
+
     fComponentAnalyticField->AddReadout("Anodo");
 
-    //field->SetComponent(fComponentAnalyticField);
-    //field->SetPlaneXY();
-    //field->SetCanvas(cfield);
-    //field->PlotContour();
+    // Definição do Sensor
 
     fSensor = new Garfield::Sensor();
     fSensor->AddComponent(fComponentAnalyticField);
     fSensor->SetArea();
-    /*fSensor->AddElectrode(fComponentAnalyticField, "Anodo");
-    fSensor->SetTimeWindow(-0.25,0.5,1000);
-    if (!readTransferFunction(fSensor)) G4cout << "Erro, arquivo ´TransferFunction´ não providenciado.\n";
-    fSensor->ClearSignal();*/
+
+    // Definição do Método de transporte TrackHeed
 
     fTrackHeed = new Garfield::TrackHeed();
     fTrackHeed->SetSensor(fSensor);
@@ -302,62 +334,62 @@ void GarfieldDetector::InitializePhysics() {
     fTrackHeed->EnableElectricField();
     fTrackHeed->EnablePhotonReabsorption();
 
-    /*TCanvas* cS = nullptr;
-    if (true) {
-        cS = new TCanvas("cS", "", 600, 600);
-        signalView.SetCanvas(cS);
-        signalView.SetSensor(fSensor);
-        signalView.SetLabelY("signal [fC]");
-    } */
+    fAvalMC = new Garfield::AvalancheMC();
+    fAvalMC->SetSensor(fSensor);
+    fAvalMC->SetDistanceSteps(1.e-4);
+
+    fAvalmc = new Garfield::AvalancheMicroscopic();
+    fAvalmc->SetSensor(fSensor);
+    fAvalmc->DisableAvalancheSizeLimit();
 }
 
 void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
     double time, double x_cm, double y_cm, double z_cm,
     double dx, double dy, double dz) {
-                            
-    std::ofstream xFile ("AvaPEle.txt", std::ofstream::app);
-    std::ofstream yFile ("AvaPTemp.txt", std::ofstream::app);
-    std::ofstream zFile ("AvaTot.txt", std::ofstream::app);
-    std::ofstream aFile ("EleEner.txt", std::ofstream::app);
-    std::ofstream bFile ("ElePos.txt", std::ofstream::app);
-    std::ofstream cFile ("EEnerPos.txt", std::ofstream::app);
 
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
     fEnergyDeposit = 0;
     DeleteSecondaryParticles();
 
-    Garfield::AvalancheMC drift; // Usar sem modelo2
-    // Garfield::DriftLineRKF drift; // Usar com modelo2
-    drift.SetSensor(fSensor);
-    //drift.SetGainFluctuationsPolya(0.4, 20000.); // Usar com modelo 2
-    drift.SetDistanceSteps(1.e-4);// Usar sem modelo2
-    Garfield::AvalancheMicroscopic avalanche;
-    avalanche.SetSensor(fSensor);
-    avalanche.DisableAvalancheSizeLimit();
+    // Raio do Ânodo
 
-    // Wire radius [cm]
     const double rWire = Dim::raiofioouro/cm;
-    // Outer radius of the tube [cm]
+
+    // Raio do Cátodo de Alumínio
+    
     const double rTube = (Dim::raioextal+Dim::raiointal)/(2*cm);
-    // Half-length of the tube [cm]
+
+    // Comprimento do detector
+    
     const double lTube = Dim::comprimento/cm;
 
     double eKin_eV = ekin_MeV * 1e+6;
 
     double xc = 0., yc = 0., zc = 0., tc = 0.;
-    // Number of electrons produced in a collision
+
+    // Número de elétrons produzidos na ionização
+    
     int nc = 0;
-    // Energy loss in a collision
+
+    // Perda de energia na ionização
+
     double ec = 0.;
-    // Dummy variable (not used at present)
+
     double extra = 0.;
+
     fEnergyDeposit = 0;
+
     if (fIonizationModel != "Heed" || particleName == "gamma") {
         if (particleName == "gamma") {
+
+            // Inicialização de um fóton no gás
+
             fTrackHeed->TransportPhoton(x_cm, y_cm, z_cm, time, eKin_eV, dx, dy, dz, nc);
-            std::cout << std::endl<<std::endl<< "\t"<<FGRN("Elétrons Gerados:")  << "\t" << nc 
-                << std::endl;
+            std::cout << std::endl<<std::endl<< "\t"<<FGRN("Elétrons Gerados:")  
+                << "\t" << nc << std::endl;
         } else {
+
+            // Inicialização de um elétron no gás
+
             fTrackHeed->TransportDeltaElectron(x_cm, y_cm, z_cm, time, eKin_eV, dx,
                 dy, dz, nc);
             fEnergyDeposit = eKin_eV;
@@ -365,17 +397,16 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
                 << std::endl;
         }
         for (int cl = 0; cl < nc; cl++) {
-            double xe, ye, ze, te;
-            
-            double ee, dxe, dye, dze;
+            double xe, ye, ze, te, ee, dxe, dye, dze;
+
+            // Referência ao elétron nº 'cl' gerado pela ionização
+
             fTrackHeed->GetElectron(cl, xe, ye, ze, te, ee, dxe, dye, dze);
-            dado = false;
             if (ze < lTube && ze > -lTube && sqrt(xe * xe + ye * ye) < rTube) {
                 nsum++;
                 if (particleName == "gamma") {
                     fEnergyDeposit += fTrackHeed->GetW();
                 }
-                analysisManager->FillH3(1, xe * 10, ye * 10, ze * 10);
                 if (createSecondariesInGeant4) {
                     double newTime = te;
                     if (newTime < time) {
@@ -385,17 +416,25 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
                         "e-", ee, newTime, xe, ye, ze, dxe, dye, dze));
                 }
 
-                drift.DriftElectron(xe, ye, ze, te);
+                // Drift do elétron
 
-                double xe1, ye1, ze1, te1, ee1;//Usar sem modelo2
+                fAvalMC->DriftElectron(xe, ye, ze, te);
+
+                double xe1, ye1, ze1, te1, ee1;
                 double xe2, ye2, ze2, te2, ee2;
 
                 int status;
-                //drift.GetEndPoint(xe2, ye2, ze2, te2, status);//Usar com modelo 2
-                drift.GetElectronEndpoint(0, xe1, ye1, ze1, te1, xe2, ye2, ze2, te2, status );//Usar sem modelo 2
-                std::cout << "\n\n\t" << FGRN("Distância ao Ânodo:") << "\t" << sqrt(xe2*xe2 + ye2*ye2)/rWire << "\n\n\t";
-                if(sqrt(xe2*xe2 + ye2*ye2) < 1.5*rWire){dado = true;}
-                if(xe2*xe2 + ye2*ye2 <= 1000*rWire*rWire) std::cout << "\n\n\t\t" << UNDL(BOLD(FRED("ELÉTRONS NO ÂNODO")))<<"\n\n";                        
+
+                // Referência ao ponto final de drift do elétron
+                
+                fAvalMC->GetElectronEndpoint(0, xe1, ye1, ze1, te1, xe2, ye2, 
+                    ze2, te2, status );
+                std::cout << "\n\n\t" << FGRN("Distância ao Ânodo:") << "\t" 
+                    << sqrt(xe2*xe2 + ye2*ye2)/rWire << "\n\n\t";
+                if(xe2*xe2 + ye2*ye2 <= 1000*rWire*rWire) std::cout << "\n\n\t\t" 
+                    << UNDL(BOLD(FRED("ELÉTRONS NO ÂNODO")))<<"\n\n";                        
+
+                // Truque caso o elétron penetre no Ânodo
 
                 if (0 < xe2 && xe2 < rWire) {
                     xe2 += rWire;
@@ -409,14 +448,20 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
                 }
 
                 double e2 = 0.1;
-                avalanche.AvalancheElectron(xe2, ye2, ze2, te2, e2, 0, 0, 0);
+
+                // Avalanche do elétron
+
+                fAvalmc->AvalancheElectron(xe2, ye2, ze2, te2, e2, 0, 0, 0);
 
                 int ne = 0, ni = 0;
-                avalanche.GetAvalancheSize(ne, ni);
+                fAvalmc->GetAvalancheSize(ne, ni);
                 int Ne = 0;
-                Ne = avalanche.GetNumberOfElectronEndpoints();
+                Ne = fAvalmc->GetNumberOfElectronEndpoints();
+
+                // Tomada de dados
+
                 for(int k= 0;k<Ne;k++){
-                    avalanche.GetElectronEndpoint(k,xe1,ye1,ze1,te1,ee1,xe2,ye2,
+                    fAvalmc->GetElectronEndpoint(k,xe1,ye1,ze1,te1,ee1,xe2,ye2,
                         ze2,te2,ee2,status);
                     double r = sqrt(xe2*xe2 + ye2*ye2 + ze2*ze2);
                     aFile << ee2 << "\n";
@@ -432,9 +477,14 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
         if (fAvalancheSize > 1) zFile << fAvalancheSize <<"\n";
         std::cout << std::endl<<"\t"<<FGRN("Total:")<< "\t"<< fAvalancheSize<<std::endl;
     } else {
+
+        // Transporte e ionização pelo Heed
+
         fTrackHeed->SetParticle(particleName);
         fTrackHeed->SetKineticEnergy(eKin_eV);
         fTrackHeed->NewTrack(x_cm, y_cm, z_cm, time, dx, dy, dz);
+
+        // Refrência as ionizações
 
         while (fTrackHeed->GetCluster(xc, yc, zc, tc, nc, ec, extra)) {
             if(particleName == "e-" || particleName == "electron"){
@@ -444,16 +494,17 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
                 std::cout << std::endl<<std::endl<< "\t"<<FGRN("Elétrons Gerados:")  
                     << "\t" << nc << std::endl;
             }      
-            dado = false;
             if (zc < lTube && zc > -lTube && sqrt(xc * xc + yc * yc) < rTube) {
                 nsum += nc;
                 fEnergyDeposit += ec;
                 for (int cl = 0; cl < nc; cl++) {
                     double xe, ye, ze, te;
                     double ee, dxe, dye, dze;
+
+                    // Referência ao elétron nº 'cl' das ionizações
+
                     fTrackHeed->GetElectron(cl, xe, ye, ze, te, ee, dxe, dye, dze);
                     if (ze < lTube && ze > -lTube && sqrt(xe * xe + ye * ye) < rTube) {
-                        analysisManager->FillH3(1, xe * 10, ye * 10, ze * 10);
                         if (createSecondariesInGeant4) {
                             double newTime = te;
                             if (newTime < time) {
@@ -463,20 +514,25 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
                                 "e-", ee, newTime, xe, ye, ze, dxe, dye, dze));
                         }
 
-                        drift.DriftElectron(xe, ye, ze, te);
+                        // Drift do elétron
+
+                        fAvalMC->DriftElectron(xe, ye, ze, te);
 
                         double xe1, ye1, ze1, te1;
                         double xe2, ye2, ze2, te2;
 
                         int status;
-                        //drift.GetEndPoint(xe2, ye2, ze2, te2, status);//Usar com modelo2
-                        drift.GetElectronEndpoint(0, xe1, ye1, ze1, te1, xe2, ye2, ze2, 
-                            te2, status); //Usar sem modelo2
+                        
+                        // Referência ao ponto final do elétron
+
+                        fAvalMC->GetElectronEndpoint(0, xe1, ye1, ze1, te1, xe2, ye2, ze2, 
+                            te2, status);
                         std::cout << "\n\n\t" << FGRN("Distância ao Ânodo:") << "\t" 
                             << sqrt(xe2*xe2 + ye2*ye2)/rWire << "\n\n\t";
-                        if(sqrt(xe2*xe2 + ye2*ye2) < 1.5*rWire){dado = true;}
                         if(xe2*xe2 + ye2*ye2 <= 1000*rWire*rWire) std::cout << "\n\n\t\t" 
                             << UNDL(BOLD(FRED("ELÉTRONS NO ÂNODO")))<<"\n\n";
+
+                        // Truque caso o elétron penetre no ânodo
 
                         if (0 < xe2 && xe2 < rWire) {
                             xe2 += rWire;
@@ -489,28 +545,28 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
                             ye2 += - rWire;
                         }
 
+                        // Avalanche do elétron
+
                         double e2 = 0.1;
-                        avalanche.AvalancheElectron(xe2, ye2, ze2, te2, e2, 0, 0, 0);
+                        fAvalmc->AvalancheElectron(xe2, ye2, ze2, te2, e2, 0, 0, 0);
 
                         int ne = 0, ni = 0;
-                        avalanche.GetAvalancheSize(ne, ni);
+                        fAvalmc->GetAvalancheSize(ne, ni);
                         std::cout << "\t"<<FGRN("Avalanche:")<< "\t"<< ne<<std::endl;
+
+                        // Tomada de dados
+
                         xFile << ne << "\n";
                         yFile << ne << "\t" << te2 << "\n";
                         fAvalancheSize += ne;
                     }
                 }
-                std::cout << std::endl<<"\t"<<FGRN("Total:")<< "\t"<< fAvalancheSize<<std::endl;
+                std::cout << std::endl<<"\t"<<FGRN("Total:")<< "\t"<< fAvalancheSize
+                    <<std::endl;
             }
         }
     }
-    fGain = fAvalancheSize / nsum;
-
-    /*fSensor->ConvoluteSignals();
-    int nt = 0;
-    //if (!fSensor->ComputeThresholdCrossings(-2., "Anodo", nt)) continue;
-    if (true) signalView.PlotSignal("Anodo",true,false,false,false,true);*/
-  
+    fGain = fAvalancheSize / nsum;  
 }
 
 std::vector<GarfieldParticle*>* GarfieldDetector::GetSecondaryParticles() {
