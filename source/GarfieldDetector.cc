@@ -286,7 +286,7 @@ void GarfieldDetector::InitializePhysics() {
 
     // Definição do Cátodo Interno
 
-    for (int i = 0; i < Dim::n; i++) {
+    for (int i = 0; i < 60; i++) {
         std::stringstream valori;
         valori << i;
         std::string icorrig;
@@ -300,7 +300,7 @@ void GarfieldDetector::InitializePhysics() {
 
     // Definição do Cátodo Externo
 
-    for (int i = 0; i < Dim::n; i++) {
+    for (int i = 0; i < 60; i++) {
         std::stringstream valori;
         valori << i;
         std::string icorrig;
@@ -361,7 +361,7 @@ void GarfieldDetector::DoIt(std::string particleName, double ekin_MeV,
 
     // Comprimento do detector
     
-    const double lTube = Dim::comprimento/cm;
+    const double lTube = 0.6*m/cm;
 
     double eKin_eV = ekin_MeV * 1e+6;
 

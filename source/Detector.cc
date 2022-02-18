@@ -103,7 +103,10 @@ void Detector::DefineMaterials() {
 
     // Definição do nicromo
 
-    auto Nicromo = new G4Material("Nicromo", Dim::densidadenicr, 2, kStateSolid, Dim::temperaturagas, Dim::pressaogas); 
+    DensidadeNiCr = 8.4*g/cm3;
+
+    auto Nicromo = new G4Material("Nicromo", DensidadeNiCr, 2, kStateSolid, 
+        Dim::temperaturagas, Dim::pressaogas); 
     Nicromo->AddMaterial(Ni, 77.0*perCent);
     Nicromo->AddMaterial(Cr, 23.0*perCent);
 
@@ -143,25 +146,25 @@ G4VPhysicalVolume* Detector::DefineVolumes(){
 
     // Definição do Mundo
 
-    auto SMundo = new G4Box("SMundo", Dim::tamanhomundo, Dim::tamanhomundo, Dim::tamanhomundo);
+    auto SMundo = new G4Box("SMundo", 1.*m, 1.*m, 1.*m);
     auto VLMundo = new G4LogicalVolume(SMundo, G4Material::GetMaterial("G4_Galactic"), "VLMundo");
     auto VFMundo = new G4PVPlacement(0, {0, 0, 0}, VLMundo, "Mundo", 0, false, 0);
 
     // Definição do Gás Ativo
     
-    auto SGas = new G4Tubs("SGas", 0, 10.45*cm, Dim::comprimento, 0, twopi);
+    auto SGas = new G4Tubs("SGas", 0, 10.45*cm, 0.6*m, 0, twopi);
     auto VLGas = new G4LogicalVolume(SGas, G4Material::GetMaterial("ArCO2_70_30"), "VLGas");
     VFGas = new G4PVPlacement(0, {0, 0, 0}, VLGas, "Gás Ativo", VLMundo, false, 0);
     
-    auto SFio = new G4Tubs("SFio", 0, Dim::raio, Dim::comprimento, 0, twopi);
+    auto SFio = new G4Tubs("SFio", 0, Dim::raio, 0.6*m, 0, twopi);
 
     auto SCatExt = new G4MultiUnion("SCatExt");
     
     // Definição do Cátodo Externo
 
-    for (G4int i = 0; i < Dim::n; i++) {
+    for (G4int i = 0; i < 60; i++) {
         G4RotationMatrix MNula = G4RotationMatrix(0, 0, 0);
-        G4Tubs* SFio = new G4Tubs("SFio", 0, Dim::raio, Dim::comprimento, 0, twopi);
+        G4Tubs* SFio = new G4Tubs("SFio", 0, Dim::raio, 0.6*m, 0, twopi);
         G4ThreeVector Pos = G4ThreeVector(Dim::distcatext*cos(i*twopi/60.), Dim::distcatext*sin(i*twopi/60.), 0);
         G4Transform3D Tr = G4Transform3D(MNula, Pos);
         SCatExt->AddNode(*SFio, Tr);
@@ -176,9 +179,9 @@ G4VPhysicalVolume* Detector::DefineVolumes(){
 
     auto SCatInt = new G4MultiUnion("SCatInt");
 
-    for (G4int i = 0; i < Dim::n; i++) {
+    for (G4int i = 0; i < 60; i++) {
         G4RotationMatrix MNula = G4RotationMatrix(0, 0, 0);
-        G4Tubs* SFio = new G4Tubs("SFio", 0, Dim::raio, Dim::comprimento, 0, twopi);
+        G4Tubs* SFio = new G4Tubs("SFio", 0, Dim::raio, 0.6*m, 0, twopi);
         G4ThreeVector Pos = G4ThreeVector(Dim::distcatint*cos(i*twopi/60.), Dim::distcatint*sin(i*twopi/60.), 0);
         G4Transform3D Tr = G4Transform3D(MNula, Pos);
         SCatInt->AddNode(*SFio, Tr);
@@ -191,13 +194,13 @@ G4VPhysicalVolume* Detector::DefineVolumes(){
 
     // Definição do Cátodo Externo de Aluminio
 
-    auto STubo = new G4Tubs("STubo", Dim::raiointal, Dim::raioextal, Dim::comprimento, 0, twopi); 
+    auto STubo = new G4Tubs("STubo", Dim::raiointal, Dim::raioextal, 0.6*m, 0, twopi); 
     auto VLTubo = new G4LogicalVolume(STubo, G4Material::GetMaterial("G4_Al"), "VLTubo");
     VFTubo = new G4PVPlacement(0, {0, 0, 0}, VLTubo, "Cátodo Alumínio", VLMundo, false, 0);
 
     // Definição do Ânodo de Ouro
 
-    auto SAnodo = new G4Tubs("SAnodo", 0, Dim::raiofioouro, Dim::comprimento, 0, twopi);
+    auto SAnodo = new G4Tubs("SAnodo", 0, Dim::raiofioouro, 0.6*m, 0, twopi);
     auto VLAnodo = new G4LogicalVolume(SAnodo, G4Material::GetMaterial("G4_Au"), "VLAnodo");
     VFAnodo = new G4PVPlacement(0, {0,0,0}, VLAnodo, "Ânodo de Ouro", VLGas, false, 0);
 
@@ -217,16 +220,14 @@ G4VPhysicalVolume* Detector::DefineVolumes(){
 
     // Regiões de Validade do Modelo Garfieldpp
     
-    if(Dim::uGpp == true ){
-        G4Region* RGarfield = new G4Region("RGarfield");
-        RGarfield->AddRootLogicalVolume(VLGas);
+    G4Region* RGarfield = new G4Region("RGarfield");
+    RGarfield->AddRootLogicalVolume(VLGas);
 
-        G4Region* RAnodo = new G4Region("RAnodo");
-        RAnodo->AddRootLogicalVolume(VLAnodo);
+    G4Region* RAnodo = new G4Region("RAnodo");
+    RAnodo->AddRootLogicalVolume(VLAnodo);
 
-        auto gpp = new GarfieldModelo("GarfieldModelo", RGarfield);
-        gpp->WriteGeometryToGDML(VFGas);
-    }
+    auto gpp = new GarfieldModelo("GarfieldModelo", RGarfield);
+    gpp->WriteGeometryToGDML(VFGas);
 
     // Região de Validade do Detector Sensível
 
@@ -243,8 +244,8 @@ void Detector::ConstructSDandField(){
     auto campoEletrico = new Campo();
     auto campoManager = G4TransportationManager::GetTransportationManager()->GetFieldManager();
     auto campoEq = new G4EqMagElectricField(campoEletrico);
-    auto passo = new G4DormandPrince745(campoEq, Dim::variaveis);
-    auto integrador = new G4IntegrationDriver<G4DormandPrince745>(Dim::passoMin, passo, Dim::variaveis);
+    auto passo = new G4DormandPrince745(campoEq, 8);
+    auto integrador = new G4IntegrationDriver<G4DormandPrince745>(0.01*mm, passo, 8);
     auto caminho = new G4ChordFinder(integrador);
 
     campoManager->SetDetectorField(campoEletrico);

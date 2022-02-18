@@ -77,7 +77,8 @@ class Detector : public G4VUserDetectorConstruction
         // Variáveis adicionais
 
         G4double intcamp, temperaturagas, pressaogas, DensidadeGas, 
-            DensidadeGas2, DensidadeCO2, DensidadeCH4, DensidadeGas3;
+            DensidadeGas2, DensidadeCO2, DensidadeCH4, DensidadeGas3,
+            DensidadeNiCr;
 
 };
 
