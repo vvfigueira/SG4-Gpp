@@ -42,21 +42,9 @@ void EventoAcao::EndOfEventAction(const G4Event* event){
     GarfieldDetector* gpp = GarfieldDetector::GetInstance();
 
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-    // fEnergyGas += gpp->GetEnergyDeposit_MeV(); // ????????????
+    fEnergyGas += gpp->GetEnergyDeposit_MeV();
     fAvalancheSize = gpp->GetAvalancheSize();
     fGain = gpp->GetGain();
-
-    if(fEnergyAbs!=0) analysisManager->FillH1(1, fEnergyAbs);
-    if(fTrackLAbs!=0) analysisManager->FillH1(2, fTrackLAbs);
-    if(fEnergyGas!=0) analysisManager->FillH1(3, fEnergyGas);
-    if(fAvalancheSize!=0) analysisManager->FillH1(4, fAvalancheSize);
-    if(fGain!=0) analysisManager->FillH1(5, fGain);
-
-    if(fEnergyAbs!=0) analysisManager->FillNtupleDColumn(0, fEnergyAbs);
-    if(fTrackLAbs!=0) analysisManager->FillNtupleDColumn(1, fTrackLAbs);
-    if(fEnergyGas!=0) analysisManager->FillNtupleDColumn(2, fEnergyGas);
-    if(fAvalancheSize!=0) analysisManager->FillNtupleDColumn(3, fAvalancheSize);
-    if(fGain!=0) analysisManager->FillNtupleDColumn(4, fGain);
 
     G4int eventID = event->GetEventID();
     G4int printModulo = G4RunManager::GetRunManager()->GetPrintProgress();

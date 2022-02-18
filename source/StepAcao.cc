@@ -18,14 +18,10 @@ StepAcao::~StepAcao(){}
 // Método executado em cada step
 
 void StepAcao::UserSteppingAction(const G4Step* step){
-    
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
 
     G4VPhysicalVolume* volume =
         step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
     auto pname = step->GetTrack()->GetParticleDefinition()->GetParticleName();
-
-    if(volume == detec12->GetVFTubo()){std::cout<<"PHOTON SAIU DO GÁS E ATINGIU ALUMÍNIO\n";}
 
     G4double edep = step->GetTotalEnergyDeposit();
 
@@ -38,26 +34,15 @@ void StepAcao::UserSteppingAction(const G4Step* step){
         event12->AddGas(edep);
     }
 
-    //if( volume == detec12->GetVFGas() && (pname == "e-" || pname == "electron") ){
-    //    std::cout << "\n\n\t\t" << UNDL(BOLD(FRED("ELÉTRONS NO GÁS")))<<"\n\n";
-    //    step->GetTrack()->SetTrackStatus(fStopAndKill);
-    //}
-
     if(volume == detec12->GetVFAnodo() && (pname == "e-" || pname == "electron")){
-        analysisManager->FillH1(6,step->GetPreStepPoint()->GetKineticEnergy()/CLHEP::eV);
-        analysisManager->FillNtupleDColumn(6, step->GetPreStepPoint()->GetKineticEnergy()/CLHEP::eV);
         step->GetTrack()->SetTrackStatus(fStopAndKill);
     }
 
     if(volume == detec12->GetVFCatExt() && (pname == "e-" || pname == "electron")){
-        analysisManager->FillH1(6,step->GetPreStepPoint()->GetKineticEnergy()/CLHEP::eV);
-        analysisManager->FillNtupleDColumn(6, step->GetPreStepPoint()->GetKineticEnergy()/CLHEP::eV);
         step->GetTrack()->SetTrackStatus(fStopAndKill);
     }
 
     if(volume == detec12->GetVFCatInt() && (pname == "e-" || pname == "electron")){
-        analysisManager->FillH1(6,step->GetPreStepPoint()->GetKineticEnergy()/CLHEP::eV);
-        analysisManager->FillNtupleDColumn(6, step->GetPreStepPoint()->GetKineticEnergy()/CLHEP::eV);
         step->GetTrack()->SetTrackStatus(fStopAndKill);
     }
 }
